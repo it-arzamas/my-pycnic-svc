@@ -1,13 +1,13 @@
 from db import db
 from orator import Model, Schema
-import logging
+import logging, hashlib
 
 db.connection().enable_query_log()
 
 Model.set_connection_resolver(db)
 schema = Schema(db)
 
-class CrudBaseModel(Model):
+class CrudBase(Model):
 
 	srcRawQry = ""
 	srcQryBind = []
@@ -69,3 +69,32 @@ class CrudBaseModel(Model):
 		me.save()
 		savedId = getattr(me,self.__primary_key__)
 		return self.getById(savedId)
+
+
+class AuthenticableBase(Model):
+
+	__attemptWith = 'email'
+
+	@classmethod
+	def setAttemptWith(self, strType):
+		self.__attemptWith = strType
+
+	@classmethod
+	def validate(self, dcData):
+		authSubject = None
+		if self.__attemptWith=='email':
+			hashed = self.hashPassword(dcData['password'])
+			authSubject = self.where('email', dcData['email']).where('password', hashed).first()
+		elif self.__attemptWith=='username':
+			hashed = self.hashPassword(dcData['password'])
+			authSubject = self.where('username', dcData['username']).where('password', hashed).first()
+		elif self.__attemptWith=='clientid':
+			authSubject = self.where('client_id', dcData['client_id']).where('client_secret', dcData['client_secret']).first()
+		else:
+			hashed = self.hashPassword(dcData['password'])
+			authSubject = self.where('email', dcData['email']).where('password', hashed).first()
+		return authSubject.to_dict()
+
+	@classmethod
+	def hashPassword(self, strPassword):
+		return hashlib.sha256(strPassword).hexdigest()
