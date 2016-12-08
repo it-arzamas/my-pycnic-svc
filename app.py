@@ -23,7 +23,7 @@ class app(WSGI):
 	debug = True
 	routes = [
     	# ('/', client.Client()),
-    	('/client', client.Client()),
-    	('/client/([\w]+)', client.Client())
+    	('/client', client.Crud()),
+    	('/client/login', client.Login()),
+    	('/client/([\w]+)', client.Crud())
 	]
-
