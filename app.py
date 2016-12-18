@@ -1,5 +1,6 @@
 ## GLOBAL MODULES
 from pycnic.core import WSGI
+import jwt
 
 ## PROJECT MODULES
 from handlers import client
@@ -24,6 +25,6 @@ class app(WSGI):
 	routes = [
     	# ('/', client.Client()),
     	('/client', client.Crud()),
-    	('/client/login', client.Login()),
+    	('/client/token', client.Token()),
     	('/client/([\w]+)', client.Crud())
 	]

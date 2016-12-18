@@ -1,13 +1,18 @@
 from pycnic.core import WSGI, Handler
 from pycnic.errors import HTTPError
 
+from middlewares.jwt_middleware import JwtMiddleware
+
 class CrudHandler(Handler):
 
 	Orm = None
 
+	jwtMiddleware = JwtMiddleware()
+
 	def __init__(self, Model):
 		self.Orm = Model
 
+	@jwtMiddleware.requires_token()
 	def get(self, id=None):
 		jsonInput = self.request.json_args
 		## record per page
@@ -36,6 +41,7 @@ class CrudHandler(Handler):
 		except Exception as e:
 			raise HTTPError(422, "Data not found.")
 
+	@jwtMiddleware.requires_token()
 	def post(self):
 		try:
 			result = self.Orm.addNew(self.request.data)
@@ -43,6 +49,7 @@ class CrudHandler(Handler):
 		except Exception as e:
 			raise HTTPError(422, "Create failed.")
 
+	@jwtMiddleware.requires_token()
 	def put(self, id):
 		try:
 			result = self.Orm.doUpdate(id, self.request.data)
@@ -50,6 +57,7 @@ class CrudHandler(Handler):
 		except Exception as e:
 			raise HTTPError(422, "Data not found.")
 
+	@jwtMiddleware.requires_token()
 	def delete(self, id):
 		try:
 			me = self.Orm.find(id)
