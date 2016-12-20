@@ -91,3 +91,7 @@ ENV/
 # OSX file
 .DS_Store
 ._*
+
+####### PROJECT
+
+config/*.ini

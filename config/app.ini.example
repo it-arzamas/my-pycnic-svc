@@ -1,0 +1,13 @@
+[JWT]
+secret = yoursecrethere
+lifetime = numberInMinute
+
+[SMTP]
+host = your,host.net
+user = username
+pass = password
+port = 465
+ssl = True
+from_address = info@sepulsa.com
+from_name = "Sepulsa Hedwig"
+

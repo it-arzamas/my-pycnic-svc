@@ -3,7 +3,7 @@ from pycnic.core import WSGI
 import jwt
 
 ## PROJECT MODULES
-from handlers import client
+from handlers import client, messaging
 
 ############# LOG HANDLER
 
@@ -26,5 +26,8 @@ class app(WSGI):
     	# ('/', client.Client()),
     	('/client', client.Crud()),
     	('/client/token', client.Token()),
-    	('/client/([\w]+)', client.Crud())
+    	('/client/([\w]+)', client.Crud()),
+
+    	# Send email
+    	('/send/email', messaging.Email())
 	]
